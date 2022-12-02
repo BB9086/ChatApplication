@@ -1,7 +1,7 @@
 # Chat Application - ASP.NET MVC, SignalR, Bootstrap, JavaScript, jQuery, SQL 
 
 
-**About this app:** This is a sample application which shows how to build real-time chat messaging using SignalR and ASP.NET MVC. 
+**About this app:** This is a sample application which shows how to build real-time chat messaging using SignalR and ASP.NET MVC. Entity Framework Database First Approach was used to interact with the SQL Server database. 
 
 ## Application screenshots
 
