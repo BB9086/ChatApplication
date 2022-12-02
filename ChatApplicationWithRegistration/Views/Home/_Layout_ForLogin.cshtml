@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <style>
+        ul.noti-content {
+            position: fixed;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            right: 150px;
+            background: #e5e5e5;
+            border-radius: 4px;
+            top: 47px;
+            width: 250px;
+            display: none;
+            border: 1px solid #9E988B;
+        }
+        .notification-icon--fixed {
+            position: relative;
+            color: #fff;
+            background-color: red;
+            border-radius: 50%;
+            font-family: "Roboto";
+            /* Alignment */
+            line-height: 0;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            /* Adjust as required: */
+            padding: 6px;
+        }
+
+        #spanNoti {
+            position: absolute;
+            top: 12px;
+            right: 4px;
+        }
+        
+        
+    </style>
+</head>
+<body>
+    
+    <div class="container body-content">
+        @RenderBody()
+       
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

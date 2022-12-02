@@ -1,0 +1,91 @@
+﻿@model ChatApplicationWithRegistration.Models.User
+
+@{
+    ViewBag.Title = "Registration page";
+    Layout = "_Layout_ForLogin.cshtml";
+}
+
+<style>
+    a:link {
+        color: lightgreen;
+    }
+
+    /* visited link */
+    a:visited {
+        color: darkcyan;
+    }
+
+    /* mouse over link */
+    a:hover {
+        color: green;
+    }
+
+    /* selected link */
+    a:active {
+        color: forestgreen;
+    }
+
+    div.divPrimar {
+        background-color: #e6e6e6;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+</style>
+
+<div class="divPrimar col-md-offset-3 col-md-6">
+    <div class="row">
+        <div class="col-md-4">
+            <h2><strong>Registration</strong></h2>
+        </div>
+
+        <div class="col-md-offset-4 col-md-4" style="padding:15px 0px">
+            <input type="button" value="Back to Login" onclick="window.location.href='@Url.Action("Login", "Home")'" class="btn btn-success btn-lg" />
+        </div>
+    </div>
+    <hr />
+
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "input-lg form-control" } })
+                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.PasswordFor(model => model.Password, new { @class = "input-lg form-control" })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ConfirmPassword, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "input-lg form-control" })
+                    @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <hr />
+            <div class="form-group">
+                <div style="margin:auto; text-align:center">
+                    <input type="submit" value="Registration" class="btn btn-success btn-lg" />
+                </div>
+            </div>
+        </div>
+    }
+
+
+</div>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }

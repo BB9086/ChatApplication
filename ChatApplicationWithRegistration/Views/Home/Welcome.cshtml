@@ -1,0 +1,840 @@
+﻿
+@{
+    ViewBag.Title = "Welcome";
+    Layout = "_Layout_ForWelcome.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: "Lato", sans-serif;
+            background-color: #DDE3FD;
+        }
+
+        /* Style the tab */
+        .tab li a {
+               
+            text-decoration: none;
+            font-size: 28px;
+        }
+
+
+        /* Change background color of buttons on hover */
+        .tab li:hover {
+             background-color: lightgray;
+        }
+
+
+        img {
+            float: left;
+            max-width: 25px;
+            width: 100%;
+            margin-right: 4px;
+            border-radius: 50%;
+        }
+
+        img.right {
+            float: right;
+            margin-left: 5px;
+            margin-right: 0;
+         }
+
+        span.right {
+            float: right;
+            
+        }
+
+        #onlineUsersList img {
+            float: left;
+            max-width: 40px;
+            width: 100%;
+            margin-right: 6px;
+            margin-top: 6px;
+            border-radius: 50%;
+        }
+
+        .open-button {
+            background-color: dodgerblue;
+            color: white;
+            padding: 8px 10px;
+            border: none;
+            cursor: pointer;
+            opacity: 0.8;
+            position: fixed;
+            bottom: 23px;
+            right: 28px;
+            width: 380px;
+            height: 30px;
+            text-align: center;
+            display: none;
+        }
+
+        /* The popup chat - hidden by default */
+        .chat-popup {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            right: 15px;
+            border: 3px solid #f1f1f1;
+            z-index: 9;
+        }
+
+        /* Add styles to the form container */
+        .form-container {
+            max-width: 400px;
+            padding: 10px;
+            background-color: white;
+        }
+
+
+
+        /* When the textarea gets focus, do something */
+        #messageInput:focus {
+            background-color: #DBE5FF;
+            border-radius: 5px;
+            border: 1px solid #0247FE;
+        }
+
+
+
+        /* Add some hover effects to buttons */
+        .form-container .btn:hover, .open-button:hover {
+            opacity: 1;
+        }
+
+        .card {
+            height: 350px;
+            border-radius: 15px !important;
+            background-color: #DEE9FC;
+        }
+
+        .noti-content span {
+            float: left;
+        }
+
+        .listNotiContent {
+            
+            color: #000;
+          
+        }
+
+        .listNotiContent a {
+            text-decoration: none;
+        }
+
+        .listNotiContent img {
+                /*margin-top: 1px;*/
+         }
+
+        #chat-with-id span {
+            border-radius: 25px;
+            background-color: #DBE5FF;
+        }
+
+        #chat-with-id img {
+            margin-top: 2px;
+        }
+
+        #messageListId img {
+            max-width: 35px;
+        }
+
+
+        #messageListId li {
+            padding: 18px 1px;
+        }
+
+        .text-right {
+            float: right;
+        }
+
+        .text-left {
+            float: left;
+        }
+
+        .messageContainer.right {
+            border: 1px solid #DEE9FC;
+            background-color: #6395F2;
+            border-radius: 5px;
+            padding: 8px;
+            margin: 8px 0;
+        }
+
+        .messageContainer.left {
+            border: 1px solid #DEE9FC;
+            background-color: #90A0B2;
+            border-radius: 5px;
+            padding: 8px;
+            margin: 8px 0;
+        }
+
+        .messageContainer::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .messageContainer img.left {
+            float: left;
+            max-width: 25px;
+            margin-left: 0px;
+            border-radius: 50%;
+            margin-top: 8px;
+        }
+
+        .messageContainer img.right {
+            float: right;
+            max-width: 25px;
+            margin-right: 0px;
+            border-radius: 50%;
+            margin-top: 8px;
+        }
+
+        
+    </style>
+</head>
+<body>
+
+    <div>
+        <div class="card-header col-md-offset-1 col-md-6">
+            <div class="input-group">
+                <input type="text" style="border-radius: 25px; margin-top:30px" onkeyup="myFunction()" onfocus="receiveFocus(this)" onfocusout="lostFocus(this)" placeholder="Search..." id="@ViewBag.UserName" class="input-lg form-control search" >
+                <div class="input-group-prepend">
+                    <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
+                </div>
+            </div>
+            @*<span id="unreadMess"></span>*@
+        </div>
+        <div class="col-md-offset-1 col-md-6">
+            <ul style="margin-top:5px" class="tab list-group" id="onlineUsersList"></ul>
+        </div>
+    </div>
+    <button class="open-button">Chat</button>
+    <div class="chat-popup" id="myForm">
+        <form class="form-container">
+            <span id="chat-with-id"></span><a href="#" style="position:absolute; top:3px; right:35px" class="min">_</a><a id="linkClose" href="#" class="close" style="font-size:20px">&times;</a>
+            <div class="card" style="width:380px;height:300px; overflow-y:scroll;margin-top:10px">
+
+                <ul id="messageListId" style="list-style-type: none;margin:2px;padding: 0">
+
+
+                    @*<li ></li>*@
+                </ul>
+                @*<div id="receivedMessageId"></div>
+                    <div id="ownMessageId"></div>*@
+
+            </div>
+
+            <table style="width:100%">
+                <tr>
+                    <td id="column1">
+                        <button style="width:100%;font-size:12px" type="button" class="btn btn-success" id="sendButton">Send</button>
+                    </td>
+                    <td id="column2">
+                        <textarea style="width:100%; margin: 2px 5px -5px 5px; border-radius:5px" id="messageInput" placeholder="Type message.." name="msg"></textarea>
+                    </td>
+                </tr>
+
+            </table>
+
+        </form>
+    </div>
+
+
+</body>
+</html>
+
+@section scripts
+    {
+
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/js"></script>
+    <script>
+        $.connection.hub.start()
+            .done(function () { console.log('connected!!!') })
+            .fail(function () { alert('ERROR!!!') });
+
+        var chatHub = $.connection.chatHub;
+        var userNamefromViewBag = $('input[type="text"]').attr('id');
+        var unreadMessage = [];
+        
+        var chatWith;
+
+        function openForm() {
+            document.getElementById("myForm").style.display = "block";
+            //var id = this.getAttribute("id");
+            //document.getElementById("chat-with-id").innerText = id;
+
+        }
+
+        function closeForm() {
+            document.getElementById("myForm").style.display = "none";
+        }
+
+        $('.min').click(function () {
+            closeForm();
+            $('.open-button').show();
+        });
+        chatHub.client.updateConnections = function (usersList) {
+            $('#onlineUsersList').empty();
+            $.each(usersList, function (index, elem) {
+
+                if (elem != userNamefromViewBag) {
+
+                    $('#onlineUsersList').append('<li class="list-group-item" style="border-radius:25px"><img src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + elem + '.jpg" alt="Avatar" style="width:100%;"><a id="' + elem + '" onclick="openForm()" href="#">' + elem + '</a></li>');
+                    $('#onlineUsersList li').click(function () {
+                        openForm();
+                        var id = $(this).find('a').text();
+                        chatWith = id;
+                        $('#chat-with-id').html('<img src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + id + '.jpg" alt="Avatar" style="width:100%">' + '<span id="receiverId" style="font-size:20px">' + id + '</span>');
+
+                        GetMessagesFromDataBase(chatWith, userNamefromViewBag, 1);
+
+                    })
+
+                }
+
+
+            })
+
+        }
+
+
+
+        document.getElementById("sendButton").addEventListener("click", event => {
+            var messagesInput = $('#messageInput').val();
+
+            $('#messageListId').append('<div class="messageContainer right"><img src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + userNamefromViewBag + '.jpg" alt="Avatar" class="right"/><li>' + '<span class="right" style="font-size:20px">' + messagesInput + '</span></br></li><small class="text-right">' + GetCurrentDateTime() + '</small></div>');
+            $('#messageInput').val('');
+            // auto scroll to bottom automatically!!! Link: https://stackoverflow.com/questions/39729791/chat-box-auto-scroll-to-bottom/39729993
+            $(".card").stop().animate({ scrollTop: $(".card")[0].scrollHeight }, 1000);
+
+            var receiverId = $('#receiverId').text();
+            sendMessage1(messagesInput, receiverId);
+
+
+        });
+
+        var sendMessage1 = function (message, userId) {
+
+            chatHub.server.sendMessage(message, userId);
+
+        }
+        function updateNotificationCount() {
+            var count = 0;
+            count = parseInt($('small.notification-badge').html()) || 0;
+            count++;
+
+            $('small.notification-badge').html(count);
+        }
+
+        chatHub.client.sendMessage = function (message, userId, senderId, dateAndTime) {
+            unreadMessage.push({ "sender": senderId, "message": message, "receiver": userId, "date": dateAndTime })
+            updateNotificationCount();
+
+
+            //Determine if CSS property is set to a certain value? Link: https://stackoverflow.com/questions/5928920/determine-if-css-property-is-set-to-a-certain-value
+
+            if ($("#myForm").css('display').toLowerCase() == 'block') {
+                var unreadMessage_Read = [];
+                var unreadMessage_Unread = [];
+                if (unreadMessage.length > 0) {
+                    var unreadCountToRead = 0;
+                
+                    $.each(unreadMessage, function (index, elem) {
+                        if (elem.sender == chatWith) {
+                            unreadCountToRead = unreadCountToRead + 1;
+                            unreadMessage_Read.push(unreadMessage[index]);
+                            $('#messageListId').append('<div class="messageContainer left"><img src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + chatWith + '.jpg" alt="Avatar" class="left"/><li>' + '<span style="font-size:20px">' + elem.message + '</span></br></li><small class="text-left">' + elem.date + '</small></div>');
+                            $(".card").stop().animate({ scrollTop: $(".card")[0].scrollHeight }, 1000);
+                            
+
+                            
+                            ////can not here, because elem.sender, elem is undefined!!!
+                            //Try not to do this, you change content and number of members in an array, and you loop through it.!!!!!!
+                            //unreadMessage.splice(index, 1);
+                        }
+                        else {
+                            unreadMessage_Unread.push(unreadMessage[index]);
+                        }
+                    });
+
+                    unreadMessage = unreadMessage_Unread;
+
+                    var count = 0;
+                    count = parseInt($('small.notification-badge').html()) || 0;
+                    count = count - unreadCountToRead;
+
+
+                    if (count <=  0) {
+                        $('small.notification-badge').html('&nbsp;');
+                    }
+                    else {
+                        $('small.notification-badge').html(count);
+                    }
+
+                }
+             
+
+
+
+            }
+
+            //What to do when open-button is visible. When I click on it, I want to se notification for that chat Person if there is some:
+            if ($(".open-button").css('display').toLowerCase() != 'none') {
+                $('.open-button').click(function () {
+                    
+                    var unreadMessage_Read = [];
+                    var unreadMessage_Unread = [];
+                    if (unreadMessage.length > 0) {
+                        var unreadCountToRead = 0;
+                        $.each(unreadMessage, function (index, elem) {
+                            if (elem.sender == chatWith) {
+
+                                unreadCountToRead = unreadCountToRead + 1;
+                                unreadMessage_Read.push(unreadMessage[index]);
+                                $('#messageListId').append('<div class="messageContainer left"><img src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + chatWith + '.jpg" alt="Avatar" class="left"/><li>' + '<span style="font-size:20px">' + elem.message + '</span></br></li><small class="text-left">' + elem.date + '</small></div>');
+                                $(".card").stop().animate({ scrollTop: $(".card")[0].scrollHeight }, 1000);
+                              
+                            }
+                            else {
+                                unreadMessage_Unread.push(unreadMessage[index]);
+                            }
+                        });
+
+                        unreadMessage = unreadMessage_Unread;
+
+                        var count = 0;
+                        count = parseInt($('small.notification-badge').html()) || 0;
+                        count = count - unreadCountToRead;
+
+                        //not count==0, if I click on notification, count=0-1(or 2 or 3), and we dont want count to be less than 0!
+                        if (count <= 0) {
+                            $('small.notification-badge').html('&nbsp;');
+                        }
+                        else {
+                            $('small.notification-badge').html(count);
+                        }
+
+
+                    }
+
+                });
+            }
+
+        }
+
+        $('#anchr').click(function (e) {
+
+            //var a = unreadMessage.length;
+            //$('#unreadMess').text(a);
+            e.stopPropagation();
+            $('.noti-content').show();
+            var count = 0;
+            count = parseInt($('small.notification-badge').html()) || 0;
+            //only load notification if not already loaded
+            if (count > 0) {
+                $('.noti-content').empty();
+                //$('.noti-content').append('Imate nove poruke od '+'<a>'+sender+'</a>').click(function () {
+                //    $('#messageListId').append('<li>' + messageFromSender + '</li>');
+
+                //});
+
+                if ($('.chat-popup').is(":visible")) {
+                    $('#chat-with-id').html('<img src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + chatWith + '.jpg" alt="Avatar" style="width:100%">' + '<span id="receiverId" style="font-size:20px">' + chatWith + '</span>');
+                }
+                //if (!document.getElementsByClassName("chat-popup").style.display == "none")
+                //{
+               
+                //}
+
+                $.each(unreadMessage, function (index, elem) {
+
+                    if ($('.noti-content').length == 0) {
+
+                        $('.noti-content').append('<li class="list-group-item" id="liElem' + index + '"><img id="elemImg' + index + '" src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + elem.sender + '.jpg" alt="Avatar" style="width:100%">' + '<a style="font-weight:bold" href="#" id="anchorElem' + index + '">' + elem.sender + '</a><span class="badge">' + 1 + '</span></li>');
+
+                    }
+                    else {
+                        var machedElm = $('.noti-content li').filter(function (i, elm) { return $(this).find('a').text() == elem.sender });
+                        if ($(machedElm).length > 0) {
+                            var counter = parseInt($(machedElm).find('span').text()) + 1;
+
+                            $(machedElm).find('span').html(counter);
+
+                        }
+                        else {
+
+                            $('.noti-content').append('<li class="list-group-item" id="liElem' + index + '"><img id="elemImg' + index + '" src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + elem.sender + '.jpg" alt="Avatar" style="width:100%">' + '<a style="font-weight:bold" href="#" id="anchorElem' + index + '">' + elem.sender + '</a><span class="badge">' + 1 + '</span></li>');
+
+                        }
+
+                    }
+
+                });
+
+                if ($('.noti-content li').length > 0) {
+                    $('.noti-content li').click(function () {
+                        var numberOfMessageToDisplay = parseInt($(this).find('span').text());
+                         chatWith = $(this).find('a').text();
+
+                        openForm();
+                        $('#chat-with-id').html('<img src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + chatWith + '.jpg" alt="Avatar" style="width:100%">' + '<span id="receiverId" style="font-size:20px">' + chatWith + '</span>');
+
+                        $('#messageListId').empty();
+
+                        GetMessagesFromDataBase1(chatWith, userNamefromViewBag, 1, numberOfMessageToDisplay);
+                        $(".card").stop().animate({ scrollTop: $(".card")[0].scrollHeight }, 1000);
+
+                    })
+
+
+                }
+
+
+            } else {
+                //If you want to show open-button when there is no new new messages:
+                //$('.open-button').show();
+                $('.noti-content').empty();
+
+                $('.noti-content').append('<li class="list-group-item"><i style="color: #cccccc">There is no new messages!<i></li>');
+                if (unreadMessage.length != 0) {
+                    $('.noti-content').append('<li class="list-group-item"><strong>Unread:</strong></li>');
+                    $.each(unreadMessage, function (index, elem) {
+                        if ($('.noti-content').length == 2) {
+
+                            $('.noti-content').append('<li class="list-group-item" id="liElem' + index + '"><img id="elemImg' + index + '" src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + elem.sender + '.jpg" alt="Avatar" style="width:100%">' + '<a style="font-weight:bold" href="#" id="anchorElem' + index + '">' + elem.sender + '</a><span class="badge">' + 1 + '</span></li>');
+
+                        }
+                        else {
+
+                            var machedElm = $('.noti-content li').filter(function (i, elm) { return $(this).find('a').text() == elem.sender });
+
+                            if ($(machedElm).length > 0) {
+                                var counter = parseInt($(machedElm).find('span').text()) + 1;
+                                debugger
+
+
+                                $(machedElm).find('span').html(counter);
+
+                            }
+                            else {
+
+                                $('.noti-content').append('<li class="list-group-item" id="liElem' + index + '"><img id="elemImg' + index + '" src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + elem.sender + '.jpg" alt="Avatar" style="width:100%">' + '<a style="font-weight:bold" href="#" id="anchorElem' + index + '">' + elem.sender + '</a><span class="badge">' + 1 + '</span></li>');
+
+                                //Don't do like this below (dinamicly added id!!!)
+                                //$('#anchorElem' + index).click(function () {
+                                //    openForm();
+                                //    $('#chat-with-id').html('<img src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + elem.sender + '.jpg" alt="Avatar" style="width:100%">' + '<span id="receiverId" style="font-size:20px">' + elem.sender + '</span>');
+                                //    chatWith = $('#chat-with-id span').text();
+                                //    $('#messageListId').empty();
+                                //    GetMessagesFromDataBase1(chatWith, userNamefromViewBag, 1, 6);
+                                //    //$('#messageListId').append('<div class="messageContainer left"><img src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + elem.sender + '.jpg" alt="Avatar" class="left"/><li>' + '<span style="font-size:20px">' + elem.message + '</span></br></li><small class="text-left">' + elem.date + '</small></div>');
+                                //    $(".card").stop().animate({ scrollTop: $(".card")[0].scrollHeight }, 1000);
+                                //    //$('#elemImg' + index).remove();
+                                //    //$('#liElem' + index).remove();
+                                //    //link: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice kako da izbacim jedan (1) element na indexu=index!!!
+                                // Note for index with prefix minuse (-)!!!!!!!
+                                //    let myFish = ['angel', 'clown', 'mandarin', 'sturgeon']
+                                //    let removed = myFish.splice(-2, 1)
+
+                                //// myFish is ["angel", "clown", "sturgeon"]
+                                //// removed is ["mandarin"]
+
+                                //    //unreadMessage.splice(index, 1);
+
+                                //});
+
+                            }
+                        }
+
+
+                    });
+
+                    if ($('.noti-content li').length > 2) {
+                        $('.noti-content li').click(function () {
+                            var numberOfMessageToDisplay = parseInt($(this).find('span').text());
+                             chatWith = $(this).find('a').text();
+
+                            openForm();
+                            $('#chat-with-id').html('<img src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + chatWith + '.jpg" alt="Avatar" style="width:100%">' + '<span id="receiverId" style="font-size:20px">' + chatWith + '</span>');
+
+                            $('#messageListId').empty();
+
+                            GetMessagesFromDataBase1(chatWith, userNamefromViewBag, 1, numberOfMessageToDisplay);
+                            $(".card").stop().animate({ scrollTop: $(".card")[0].scrollHeight }, 1000);
+
+                        })
+
+
+                    }
+                }
+
+            }
+            $('small.notification-badge').html('&nbsp;');
+
+        })
+
+        $('html').click(function () {
+            $('.noti-content').hide();
+        });
+
+        $('.open-button').click(function () {
+            openForm();
+            $('#chat-with-id').html('<img src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + chatWith + '.jpg" alt="Avatar" style="width:100%">' + '<span id="receiverId" style="font-size:16px">' + chatWith + '</span>');
+
+        });
+
+        $('#linkClose').click(function () {
+            closeForm();
+            //document.getElementsByClassName("open-button").style.display = "none";
+
+            $('.open-button').css('display', 'none');
+
+        });
+
+        //Change textarea width when receive focus and to lose focus:
+
+        function receiveFocus(x) {
+
+            x.style.width = "150%";
+
+        }
+        function lostFocus(x) {
+
+
+            x.style.width="100%";
+
+        }
+
+
+        // Search funcionality: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_search_menu
+
+        function myFunction() {
+            var input, filter, ul, li, a, i;
+            input = document.getElementById("" + userNamefromViewBag);
+            filter = input.value.toUpperCase();
+            ul = document.getElementById("onlineUsersList");
+            li = ul.getElementsByTagName("li");
+            for (i = 0; i < li.length; i++) {
+                a = li[i].getElementsByTagName("a")[0];
+                if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = "";
+                } else {
+                    li[i].style.display = "none";
+                }
+            }
+        }
+        //When click on enter to send a message!!!
+        $('#messageInput').keyup(function (e) {
+
+            if (e.keyCode == 13) {
+                //e.preventDefault();
+                $('#sendButton').click();
+            }
+
+        });
+
+
+        function GetMessagesFromDataBase(sender1, receiver, pageNo) {
+            var unreadMessage_Read = [];
+            var unreadMessage_Unread = [];
+            if (unreadMessage.length > 0) {
+                for (var i = 0; i < unreadMessage.length; i++) {//Filter and delete filtered elements in an array, must define here because elem.sender, elem is undefined!!! Link:https://stackoverflow.com/questions/37385299/filter-and-delete-filtered-elements-in-an-array
+                    if (unreadMessage[i].sender == sender1) {
+                        unreadMessage_Read.push(unreadMessage[i]);
+                    }
+                    else {
+                        unreadMessage_Unread.push(unreadMessage[i]);
+
+                    }
+
+                }
+                unreadMessage = unreadMessage_Unread;
+                if (unreadMessage_Read.length >= 0) {
+                    var countUnread = unreadMessage_Read.length;
+                    $.ajax({
+                        url: 'GetTop6Message',
+                        data: { sender: sender1, receiver: receiver, pageNumber: pageNo, pageSize: (unreadMessage_Read.length+5) },
+                        method: 'get',
+
+                        success: function (data) {
+                            $('#messageListId').empty();
+
+                            $.each(data, function (index, elem) {
+                                if (elem.Sender != receiver) {
+                                    //to show sender name if message is sent from another user (go to the left side in ul (messageListId)), and when I send message (go to the right side in ul (messageListId))!
+                                    $('#messageListId').prepend('<div class="messageContainer left"><img src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + elem.Sender + '.jpg" alt="Avatar" class="left"/><li>' + '<span style="font-size:20px">' + elem.Message + '</span></br></li><small class="text-left">' + ConvertDate(elem.Datum) + '</small></div>');
+
+                                }
+                                else {
+                                    $('#messageListId').prepend('<div class="messageContainer right"><img src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + elem.Sender + '.jpg" alt="Avatar" class="right"/><li>' + '<span class="right" style="font-size:20px">' + elem.Message + '</span></br></li><small class="text-right">' + ConvertDate(elem.Datum) + '</small></div>');
+
+                                }
+
+                                $(".card").stop().animate({ scrollTop: $(".card")[0].scrollHeight }, 1000);
+                                countUnread = countUnread - 1;
+                                if (countUnread >= 0) {
+
+                                var count = 0;
+                                count = parseInt($('small.notification-badge').html()) || 0;
+                                count = count - 1;
+                                }
+
+                                if (count <= 0) {
+                                    $('small.notification-badge').html('&nbsp;');
+                                }
+                                else {
+                                    $('small.notification-badge').html(count);
+                                }
+
+                            })
+
+
+
+                        }
+
+
+                    })
+
+                }
+
+
+            }
+            else {
+                $.ajax({
+                    url: 'GetTop6Message',
+                    data: { sender: sender1, receiver: receiver, pageNumber: pageNo, pageSize: 6 },
+                    method: 'get',
+
+                    success: function (data) {
+                        $('#messageListId').empty();
+                        
+                        $.each(data, function (index, elem) {
+                            if (elem.Sender != receiver) {
+                                //to show sender name if message is sent from another user (go to the left side in ul (messageListId)), and when I send message (go to the right side in ul (messageListId))!
+                                $('#messageListId').prepend('<div class="messageContainer left"><img src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + elem.Sender + '.jpg" alt="Avatar" class="left"/><li>' + '<span style="font-size:20px">' + elem.Message + '</span></br></li><small class="text-left">' + ConvertDate(elem.Datum) + '</small></div>');
+
+                            }
+                            else {
+                                $('#messageListId').prepend('<div class="messageContainer right"><img src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + elem.Sender + '.jpg" alt="Avatar" class="right"/><li>' + '<span class="right" style="font-size:20px">' + elem.Message + '</span></br></li><small class="text-right">' + ConvertDate(elem.Datum) + '</small></div>');
+
+                            }
+
+                            $(".card").stop().animate({ scrollTop: $(".card")[0].scrollHeight }, 1000);
+                            
+
+                            var count = 0;
+                            count = parseInt($('small.notification-badge').html()) || 0;
+                            count = count - 1;
+
+
+                            if (count <= 0) {
+                                $('small.notification-badge').html('&nbsp;');
+                            }
+                            else {
+                                $('small.notification-badge').html(count);
+                            }
+
+                        })
+
+                    }
+
+                })
+            }
+        }
+
+        function GetMessagesFromDataBase1(sender, receiver, pageNo, pageSize) {
+            $.ajax({
+                url: 'GetTop6Message',
+                data: { sender: sender, receiver: receiver, pageNumber: pageNo, pageSize: pageSize },
+                method: 'get',
+
+                success: function (data) {
+                    $('#messageListId').empty();
+                    var forDeleting = [];
+                    $.each(data, function (index, elem) {
+                        if (elem.Sender != receiver) {
+                            //to show sender name if message is sent from another user (go to the left side in ul (messageListId)), and when I send message (go to the right side in ul (messageListId))!
+                            $('#messageListId').prepend('<div class="messageContainer left"><img src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + elem.Sender + '.jpg" alt="Avatar" class="left"/><li>' + '<span style="font-size:20px">' + elem.Message + '</span></br></li><small class="text-left">' + ConvertDate(elem.Datum) + '</small></div>');
+
+                        }
+                        else {
+                            $('#messageListId').prepend('<div class="messageContainer right"><img src="http://192.168.1.158/ChatApplicationWithRegistration/Pictures/' + elem.Sender + '.jpg" alt="Avatar" class="right"/><li>' + '<span class="right" style="font-size:20px">' + elem.Message + '</span></br></li><small class="text-right">' + ConvertDate(elem.Datum) + '</small></div>');
+
+                        }
+
+                        $(".card").stop().animate({ scrollTop: $(".card")[0].scrollHeight }, 1000);
+                        forDeleting.push(elem.Sender);
+
+                        var count = 0;
+                        count = parseInt($('small.notification-badge').html()) || 0;
+                        count = count - 1;
+
+
+                        if (count <= 0) {
+                            $('small.notification-badge').html('&nbsp;');
+                        }
+                        else {
+                            $('small.notification-badge').html(count);
+                        }
+
+                    })
+
+                    for (var i = 0; i < forDeleting.length; i++) {//Filter and delete filtered elements in an array, must define here because elem.sender, elem is undefined!!! Link:https://stackoverflow.com/questions/37385299/filter-and-delete-filtered-elements-in-an-array
+                        if (unreadMessage.length > 0) {
+                            unreadMessage.splice(unreadMessage.findIndex(e => e.sender === forDeleting[i]), 1);
+                        }
+
+                    }
+
+                   
+                    forDeleting = [];
+
+                }
+
+            })
+        }
+
+        function ConvertDate(jsonDate) {
+            var date = new Date(parseInt(jsonDate.substr(6)));
+            var month = date.getMonth() + 1;
+            var hours = date.getHours();
+            //am-pm format. Link: https://stackoverflow.com/questions/8888491/how-do-you-display-javascript-datetime-in-12-hour-am-pm-format
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            var minutes = date.getMinutes();
+            if (minutes < 10) {
+                minutes = "0" + minutes;
+            }
+            return date.getDate() + '/' + month + '/' + date.getFullYear() + ' ' + hours + ':' + minutes + ' ' + ampm;
+        }
+
+        function GetCurrentDateTime() {
+            var currentdate = new Date();
+            var month = currentdate.getMonth() + 1;
+            var hours = currentdate.getHours();
+            //am-pm format. Link: https://stackoverflow.com/questions/8888491/how-do-you-display-javascript-datetime-in-12-hour-am-pm-format
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            var minutes = currentdate.getMinutes();
+            if (minutes < 10) {
+                minutes = "0" + minutes;
+            }
+            return currentdate.getDate() + '/' + month + '/' + currentdate.getFullYear() + ' ' + hours + ':' + minutes + ' ' + ampm;
+
+        }
+
+
+    </script>
+
+}

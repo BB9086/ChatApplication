@@ -1,0 +1,47 @@
+﻿@if (Request.IsAuthenticated)
+{
+    //If FormMethod is get, can't see routevalues, submit elements (textbox...) see in url. Routevalues only can see if FormMethod is post. TextBox names are not in url but he can see them.
+    using (Html.BeginForm("LogOff", "Home", FormMethod.Get, new { id = "logoutForm", @class = "navbar-right btn-lg" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <ul class="nav navbar-nav navbar-right">
+
+            <li>
+                
+                @Html.ActionLink("Hello " + User.Identity.Name + "!", "Index", "Home", routeValues: null, htmlAttributes: new { title = "Manage", id = "anchorId", style="font-size:20px" })
+            </li>
+            <li>
+                <a id="anchr">
+                    <i id="envelopeLink" class="glyphicon glyphicon-envelope"></i><span id="spanNoti" class="notification-icon--fixed"><small class="notification-badge">&nbsp;</small></span></a>
+                    <ul class="noti-content list-group">
+                       
+                    </ul>
+</li>
+
+            @*For submiting form: https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_form_submit*@
+
+            @*<form id="myForm" action="/action_page.php">
+                        First name: <input type="text" name="fname"><br>
+                        Last name: <input type="text" name="lname"><br><br>
+                        <input type="button" onclick="myFunction()" value="Submit form">
+                    </form>
+
+                    <script>
+                function myFunction() {
+                  document.getElementById("myForm").submit();
+                }
+                    </script>*@
+            
+            <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+        </ul>
+        
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}
